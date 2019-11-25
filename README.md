@@ -1,7 +1,7 @@
 # iDeagen-Java-Test
 Java Test for iDeagen - Ardiansyah
 25th Nov 2019
-Taken times approximately about 2.5 hours
+Taken times approximately about 3 hours
 
 I completed for all following test cases:
 1). Calculation with operators.
