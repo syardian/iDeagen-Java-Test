@@ -17,4 +17,4 @@ Solution:
 6). Introduced method "String doCalculate(String sum, String[] sumArray, String operator1, String operator2)" to do calculation of opertors.
 7). Introduced method "String getOperator(String sum, String operator1, String operator2)" to decide which operator have to execute first for the operators has same level, like multiply and divide, add and subtract. For example, among multiply and divide operator, will calculate for operator in left side first.
 8). Introduced method "String doCalculateWithBracket(String sum, String[] sumArray)" to handle the summary with brackets and nested bracket before do operator calculation.
-9. Created "static void main(String[] args)" method to execute test cases to ensure the logic is working properly.
+9). Created "static void main(String[] args)" method to execute test cases to ensure the logic is working properly.
