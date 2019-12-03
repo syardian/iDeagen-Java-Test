@@ -1,5 +1,6 @@
 /*
- * Date		: 25-NOV-2019
+ * Created Date	: 25-NOV-2019
+ * Modified Date: 02-DEC-2019
  * Author	: Ardiansyah
  * Purpose	: iDeagen Java Test
  */
@@ -70,9 +71,9 @@ public class Calculator {
 	}
 
 	//Method to get index of close bracket, it's getting from first index of close bracket to handle if there are nested bracket.
-	public static int getIndexOfCloseBracket(String[]sumArray, String operator) {
+	public static int getIndexOfCloseBracket(String[]sumArray, int startIndex, String operator) {
 		int index = 0;
-		for(int i=0; i<sumArray.length;i++) {
+		for(int i=startIndex; i<sumArray.length;i++) {
 			if(operator.equals(sumArray[i])) {
 				index = i;
 				break;
@@ -85,31 +86,31 @@ public class Calculator {
 	public static String doCalculate(String sum, String[] sumArray, String operator1, String operator2) {
 		int index = Calculator.getIndexOfOperator(sumArray, Calculator.getOperator(sum, operator1, operator2));
 		String targetSum = sumArray[index-1] + " " + sumArray[index] + " " + (sumArray[index+1]);
-		String resultSum = "";
+		StringBuilder resultSum = new StringBuilder();
 		if(index == 1) {
 			String remainSum = sum.replace(targetSum, "");
-			resultSum = String.valueOf(Calculator.calculate(targetSum)).concat(remainSum);
+			resultSum.append(String.valueOf(Calculator.calculate(targetSum)).concat(remainSum));
 		}else if(index == sumArray.length -1){
 			String remainSum = sum.replace(targetSum, "");
-			resultSum = remainSum.concat(String.valueOf(Calculator.calculate(targetSum)));
+			resultSum.append(remainSum.concat(String.valueOf(Calculator.calculate(targetSum))));
 		}else {				
 			String remainLeft = sum.substring(0, sum.lastIndexOf(targetSum));
 			String remainRight = sum.substring(sum.lastIndexOf(targetSum) + targetSum.length());
-			resultSum = remainLeft.concat(String.valueOf(Calculator.calculate(targetSum))).concat(remainRight);
+			resultSum.append(remainLeft.concat(String.valueOf(Calculator.calculate(targetSum))).concat(remainRight));
 		}
-		return resultSum;
+		return resultSum.toString();
 	}
 
 	//Method to decide which operator have to execute first for the operators has same level, like multiply and divide, add and subtract.
 	//For example, among multiply and divide operator, will calculate for operator in left side first.
 	public static String getOperator(String sum, String operator1, String operator2) {
-		if(sum.indexOf(operator1) != -1 && sum.indexOf(operator2) != -1) {
+		if(sum.contains(operator1) && sum.contains(operator2)) {
 			if(sum.indexOf(operator1) < sum.indexOf(operator2)) {
 				return operator1;
 			}else {
 				return operator2;
 			}
-		}else if(sum.indexOf(operator1) != -1) {
+		}else if(sum.contains(operator1)) {
 			return operator1;
 		}else {
 			return operator2;
@@ -120,20 +121,21 @@ public class Calculator {
 	public static String doCalculateWithBracket(String sum, String[] sumArray) {
 		//find index of multiply		
 		int indexOpenBracket = Calculator.getIndexOfOpenBracket(sumArray, OPEN_BRACKET);
-		int indexCloseBracket = Calculator.getIndexOfCloseBracket(sumArray, CLOSE_BRACKET);
-		String targetBracket = sum.substring(sum.lastIndexOf(OPEN_BRACKET),sum.indexOf(CLOSE_BRACKET)+1);
-		String targetSum ="";
+		int indexCloseBracket = Calculator.getIndexOfCloseBracket(sumArray, indexOpenBracket, CLOSE_BRACKET);
+                String targetBracket = Calculator.getTargetBracket(sumArray, indexOpenBracket, indexCloseBracket);
+		String targetSum = "";
 		for (int i = indexOpenBracket+1; i<indexCloseBracket ; i++) {
 			targetSum = targetSum + sumArray[i];
 			if(i < indexCloseBracket-1) {
 				targetSum = targetSum + " ";
 			}
 		}
-		String resultSum = "";		
+		String resultSum;		
 		String[] bracketArray = targetSum.split(" ");
 		if(targetSum.contains(OPEN_BRACKET)){
 			targetSum =  doCalculateWithBracket(targetSum, bracketArray);
 		}
+                                
 		if(indexOpenBracket == 0 && indexCloseBracket == sumArray.length -1) {
 			resultSum = String.valueOf(Calculator.calculate(targetSum));
 		}else if(indexOpenBracket == 0) {
@@ -149,6 +151,17 @@ public class Calculator {
 		}		
 		return resultSum;
 	}
+        
+        public static String getTargetBracket(String[] sumArray, int startIndex, int endIndex){
+            StringBuilder sb = new StringBuilder();
+            for(int i=startIndex; i<=endIndex;i++) {
+                sb.append(sumArray[i]);
+                if(i < endIndex) {
+                    sb.append(" ");
+                }
+            }
+            return sb.toString();
+        }
 
 	//Main method to test the test cases
 	public static void main(String[] args) {
@@ -207,6 +220,27 @@ public class Calculator {
 		System.out.println("Additional Test2: " + additional2);
 		System.out.println("Expected Result	: 6.0");
 		System.out.println("Actual Result	: " + String.format ("%.1f", resultAdditional2_));	
+		System.out.println("=====================================");
+                
+        String additional3 = "( 1 + 2 ) * ( 3 + 4 )";
+		Double resultAdditional3_ = Calculator.calculate(additional3);
+		System.out.println("Additional Test3: " + additional3);
+		System.out.println("Expected Result	: 21.0");
+		System.out.println("Actual Result	: " + String.format ("%.1f", resultAdditional3_));	
+		System.out.println("=====================================");
+                
+        String additional4 = "( 1 + 2 ) * ( ( 3 - 4 ) / 5 + 6 )";
+		Double resultAdditional4_ = Calculator.calculate(additional4);
+		System.out.println("Additional Test4: " + additional4);
+		System.out.println("Expected Result	: 17.4");
+		System.out.println("Actual Result	: " + String.format ("%.1f", resultAdditional4_));	
+		System.out.println("=====================================");
+                
+        String additional5 = "1 / ( 2 + 3 * ( 4 - 5 ) )";
+		Double resultAdditional5_ = Calculator.calculate(additional5);
+		System.out.println("Additional Test5: " + additional5);
+		System.out.println("Expected Result	: -1.0");
+		System.out.println("Actual Result	: " + String.format ("%.1f", resultAdditional5_));	
 		System.out.println("=====================================");
 
 	}
